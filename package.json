@@ -1,0 +1,23 @@
+{
+  "name": "free-hls.js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Kevin <sxzz@sxzz.moe>",
+  "scripts": {
+    "upload": "./upload.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sxzz/free-hls.js.git"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "commander": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "es6-promise-pool": "^2.5.0",
+    "form-data": "^3.0.0",
+    "qs": "^6.9.1",
+    "shelljs": "^0.8.3"
+  }
+}
