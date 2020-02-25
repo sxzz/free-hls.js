@@ -70,7 +70,7 @@ async function publish(code, title = null) {
 }
 
 async function main() {
-  const title = process.argv[3] || path.parse(process.argv[2], ".mp4").name;
+  const title = process.argv[3] || path.parse(process.argv[2]).name;
   const tmpDir = path.resolve(__dirname, "tmp");
   const file = path.resolve(process.argv[2]);
   const command = await command_generator(file);
