@@ -7,7 +7,6 @@ const qs = require("qs");
 const shelljs = require("shelljs");
 const axios = require("axios");
 const glob = require("glob");
-const FormData = require("form-data");
 const PromisePool = require("es6-promise-pool");
 require("dotenv").config();
 const uploader = require("./uploader/" + process.env.UPLOAD_DRIVE);
@@ -32,13 +31,13 @@ function video_codec(file) {
 async function command_generator(file) {
   let sub = "";
 
-  const rate = bit_rate(file);
-  const vcodec = video_codec(file);
-  const segment_time = Math.min(20, parseInt(((20 * 2) << 22) / (rate * 1.35)));
+  let rate = bit_rate(file);
+  let vcodec = video_codec(file);
+  let segment_time = Math.min(20, parseInt(((20 * 2) << 22) / (rate * 1.35)));
 
   // LIMITED
   if (rate > 6e6 || process.argv[4] == "LIMITED") {
-    br = Math.min(rate, 15e6);
+    let br = Math.min(rate, 15e6);
     sub += ` -b:v ${br} -maxrate ${16e6} -bufsize ${parseInt(16e6 / 1.5)}`;
     vcodec = "h264";
     segment_time = 5;
@@ -46,10 +45,12 @@ async function command_generator(file) {
 
   // SEGMENT_TIME
   if (!isNaN(parseInt(process.argv[4]))) {
-    sub += ` -segment_time ${parseInt(argv[4])}`;
+    sub += ` -segment_time ${parseInt(process.argv[4])}`;
+  } else {
+    sub += ` -segment_time ${segment_time}`;
   }
 
-  return ` -i ${file} -vcodec ${vcodec} -acodec aac -map 0 -f segment -segment_list out.m3u8 ${sub} out%05d.ts`;
+  return `ffmpeg -i ${file} -vcodec ${vcodec} -acodec aac -bsf:v h264_mp4toannexb -map 0:v:0 -map 0:a? -f segment -segment_list out.m3u8 ${sub} out%05d.ts`;
 }
 
 async function publish(code, title = null) {
@@ -69,9 +70,7 @@ async function publish(code, title = null) {
 }
 
 async function main() {
-  const title = process.argv[3]
-    ? process.argv[3]
-    : path.parse(process.argv[2], ".mp4")["name"];
+  const title = process.argv[3] || path.parse(process.argv[2], ".mp4").name;
   const tmpDir = path.resolve(__dirname, "tmp");
   const file = path.resolve(process.argv[2]);
   const command = await command_generator(file);
@@ -83,28 +82,50 @@ async function main() {
 
   process.chdir(tmpDir);
 
-  console.info(`ffmpeg ${command}`);
-  shelljs.exec(`ffmpeg ${command}`);
+  console.info(command);
+  shelljs.exec(command);
 
   let lines = fs.readFileSync("out.m3u8", { encoding: "utf-8", flag: "r" });
   const ts_files = glob.sync("*.ts");
-  let i = 0;
+  let completions = 0,
+    failures = 0;
 
   const generatePromises = function*() {
     for (const ts_file of ts_files) {
-      yield uploader(ts_file);
+      yield uploader(ts_file).then(result => {
+        completions++;
+
+        if (!result) {
+          failures++;
+          console.error(
+            `[${completions}/${ts_files.length}] Uploaded failed: ${result}`
+          );
+          return Promise.reject(result);
+        }
+
+        const { filename, url } = result;
+        lines = lines.replace(filename, url);
+        console.info(
+          `[${completions}/${ts_files.length}] Uploaded ${filename} to ${url}`
+        );
+      });
     }
   };
   const concurrency = 10;
   const promiseIterator = generatePromises();
   const pool = new PromisePool(promiseIterator, concurrency);
-  pool.addEventListener("fulfilled", event => {
-    const { filename, url } = event.data.result;
-    lines = lines.replace(filename, url);
-    i++;
-    console.info(`[${i}/${ts_files.length}] Uploaded ${filename} to ${url}`);
-  });
-  await pool.start();
+
+  try {
+    await pool.start();
+  } catch (err) {
+    console.info(
+      `Partially successful: ${completions}/${completions - failures}`
+    );
+    console.info("You can re-execute this program with the same parameters");
+    process.exit();
+  }
+
+  fs.writeFileSync("out.m3u8", lines, { flag: "w" });
 
   console.info(
     `This video has been published to: ${await publish(lines, title)}`
