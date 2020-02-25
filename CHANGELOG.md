@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/sxzz/free-hls.js/compare/v1.0.1...v1.0.2) (2020-02-25)
+
+
+### Bug Fixes
+
+* delete useless argument ([e8fa9a8](https://github.com/sxzz/free-hls.js/commit/e8fa9a83675b9d4d75625195dc6a4ebe22cdeff4))
+
 ### [1.0.1](https://github.com/sxzz/free-hls.js/compare/v1.0.0...v1.0.1) (2020-02-25)
 
 
