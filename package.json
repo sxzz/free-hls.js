@@ -12,7 +12,7 @@
     "url": "git+https://github.com/sxzz/free-hls.js.git"
   },
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "commander": "^4.1.1",
     "dotenv": "^8.2.0",
     "es6-promise-pool": "^2.5.0",
