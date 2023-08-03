@@ -18,8 +18,8 @@ dependencies:
     specifier: ^3.0.0
     version: 3.0.0
   qs:
-    specifier: ^6.9.4
-    version: 6.9.4
+    specifier: ^6.9.7
+    version: 6.9.7
   shelljs:
     specifier: ^0.8.4
     version: 0.8.4
@@ -667,8 +667,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /qs@6.9.4:
-    resolution: {integrity: sha512-A1kFqHekCTM7cz0udomYUoYNWjBebHm/5wzU/XqrBRBNWectVH0QIiN+NEcZ0Dte5hvzHwbr8+XQmguPhJ6WdQ==}
+  /qs@6.9.7:
+    resolution: {integrity: sha512-IhMFgUmuNpyRfxA90umL7ByLlgRXu6tIfKPpF5TmcfRLlLCckfP/g3IQmju6jjpu+Hh8rA+2p6A27ZSPOOHdKw==}
     engines: {node: '>=0.6'}
     dev: false
 
