@@ -24,7 +24,7 @@
     "es6-promise-pool": "^2.5.0",
     "form-data": "^3.0.0",
     "qs": "^6.9.7",
-    "shelljs": "^0.8.4"
+    "shelljs": "^0.8.5"
   },
   "devDependencies": {
     "eslint": "^7.17.0"
