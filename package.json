@@ -23,7 +23,7 @@
     "dotenv": "^8.2.0",
     "es6-promise-pool": "^2.5.0",
     "form-data": "^3.0.0",
-    "qs": "^6.9.4",
+    "qs": "^6.9.7",
     "shelljs": "^0.8.4"
   },
   "devDependencies": {
