@@ -19,7 +19,7 @@
   ],
   "homepage": "https://github.com/sxzz/free-hls.js#readme",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "dotenv": "^8.2.0",
     "es6-promise-pool": "^2.5.0",
     "form-data": "^3.0.0",
